@@ -1,0 +1,7 @@
+
+use App\Models\Invoice;
+
+public function totalSales() {
+    $totalSales = Invoice::sum('total_amount');
+    return view('reports.sales', compact('totalSales'));
+}

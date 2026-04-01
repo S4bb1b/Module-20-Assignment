@@ -1,0 +1,9 @@
+
+public function lowStock() {
+    $lowStock = DB::table('products')
+        ->where('stock_quantity', '<', 10)
+        ->select('name', 'stock_quantity')
+        ->get();
+        
+    return view('reports.low_stock', compact('lowStock'));
+}

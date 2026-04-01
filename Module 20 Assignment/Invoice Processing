@@ -1,0 +1,26 @@
+public function store(Request $request)
+{
+    DB::transaction(function () use ($request) {
+        // 1. Create Invoice
+        $invoice = Invoice::create([
+            'customer_id' => $request->customer_id,
+            'total_amount' => $request->total_amount,
+        ]);
+
+        // 2. Process Items
+        foreach ($request->products as $item) {
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['qty'],
+                'price' => $item['price'],
+            ]);
+
+            // 3. Update Stock
+            $product = Product::find($item['id']);
+            $product->decrement('stock_quantity', $item['qty']);
+        }
+    });
+
+    return redirect()->route('invoices.index');
+}

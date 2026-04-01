@@ -1,0 +1,9 @@
+public function customerReport() {
+    $report = DB::table('customers')
+        ->join('invoices', 'customers.id', '=', 'invoices.customer_id')
+        ->select('customers.name', DB::raw('SUM(invoices.total_amount) as total_spent'))
+        ->groupBy('customers.id', 'customers.name')
+        ->get();
+        
+    return view('reports.customers', compact('report'));
+}

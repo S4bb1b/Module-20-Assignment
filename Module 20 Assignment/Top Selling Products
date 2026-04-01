@@ -1,0 +1,13 @@
+use Illuminate\Support\Facades\DB;
+
+public function topSelling() {
+    $topProducts = DB::table('invoice_items')
+        ->join('products', 'invoice_items.product_id', '=', 'products.id')
+        ->select('products.name', DB::raw('SUM(invoice_items.quantity) as total_sold'))
+        ->groupBy('products.id', 'products.name')
+        ->orderByDesc('total_sold')
+        ->limit(5)
+        ->get();
+        
+    return view('reports.top_products', compact('topProducts'));
+}

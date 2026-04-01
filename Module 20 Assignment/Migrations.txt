@@ -1,0 +1,44 @@
+
+public function up(): void
+{
+    Schema::create('categories', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->timestamps();
+    });
+
+    Schema::create('products', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('category_id')->constrained()->onDelete('cascade');
+        $table->string('name');
+        $table->decimal('price', 10, 2);
+        $table->string('image')->nullable();
+        $table->integer('stock_quantity');
+        $table->softDeletes(); // Task 1 Requirement
+        $table->timestamps();
+    });
+
+    Schema::create('customers', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('phone');
+        $table->text('address');
+        $table->timestamps();
+    });
+
+    Schema::create('invoices', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+        $table->decimal('total_amount', 10, 2);
+        $table->timestamps();
+    });
+
+    Schema::create('invoice_items', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('invoice_id')->constrained()->onDelete('cascade');
+        $table->foreignId('product_id')->constrained()->onDelete('cascade');
+        $table->integer('quantity');
+        $table->decimal('price', 10, 2);
+        $table->timestamps();
+    });
+}
